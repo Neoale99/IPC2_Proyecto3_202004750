@@ -5,6 +5,8 @@ from manage import Manage
 from xml.etree import ElementTree as ET
 import re 
 from datetime import datetime
+from facturas import Facturas
+from os import error,startfile
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -20,31 +22,62 @@ def cargar():
     xml = str(request.data.decode('utf-8'))
     print(xml)
     root = ET.fromstring(xml)
-    for elemento in root:
-        print(elemento.text)
-        for time in elemento.iter('TIEMPO'):
-            match = re.search(r'(\d+/\d+/\d{4})',time.text)
-            fecha = match.group(1)
-            fecha = fecha.strip()
-            try:
-             date_format="%d/%m/%Y"
-             datetime.strptime(fecha,date_format)
-             print(fecha)
-            except ValueError as err:
-             print(err)
-        for ref in elemento.iter('REFERENCIA'):
-            print(ref.text)
-        for nite in elemento.iter('NIT_EMISOR'):
-            print(nite.text)
-        for nitre in elemento.iter('NIT_RECEPTOR'):
-            print(nitre.text)
-        for val in elemento.iter('VALOR'):
-            print(val.text)
-        for iva in elemento.iter('IVA'):
-            print(iva.text)
-        for tot in elemento.iter('TOTAL'):
-            print(tot.text)
-    return jsonify({"msg":'si sale'})
+    try:
+        for elemento in root:
+            print(elemento.text)
+            for time in elemento.iter('TIEMPO'):
+                match = re.search(r'(\d+/\d+/\d{4})',time.text)
+                fecha = match.group(1)
+                fecha = fecha.strip()
+                Facturas.listafec.append(fecha)
+                
+            for ref in elemento.iter('REFERENCIA'):
+                Facturas.listaref.append(ref.text)
+            for nite in elemento.iter('NIT_EMISOR'):
+                nitsin = nite.text.strip()
+                Facturas.listanite.append(nite.text)
+                if len(nitsin)>=2 and len(nitsin) <= 21 : 
+                    print(nitsin)
+                    listita = []
+                    long = len(nitsin)
+                    suma = 0
+                    dig = long-1
+                    contar = long
+                    a = int(nitsin[dig])
+                    print("aqui sigue")
+                    a2 = dig
+                    
+                    for i in range(dig):
+                        print(int(nitsin[i])*contar)
+                        listita.append(int(nitsin[i])*contar)
+                        a2 -=1
+                        contar -=1
+                    for x in range(dig):
+                        suma += listita[x]
+                        x +=1
+                    mod = suma % 11
+                    paso2 = 11-mod
+                    mod2 = paso2 % 11
+                    if mod2 < 10 and mod2 == a:
+                        print("La factura fue validada")
+            for nitre in elemento.iter('NIT_RECEPTOR'):
+                Facturas.listanitrec.append(nitre.text)
+            for val in elemento.iter('VALOR'):
+                valor = float(val.text)
+                valor = round(valor,2)
+                Facturas.listavalor.append(valor)
+            for iva in elemento.iter('IVA'):
+                IVA = round(valor*0.12,2)
+                print(IVA)
+                print(iva.text)
+                Facturas.listaiva.append(iva.text)
+            for tot in elemento.iter('TOTAL'):
+                Facturas.listatot.append(tot.text)
+                
+                Facturas.contadordefacturas += 1
+    except:
+        print()
+    return jsonify({"msg":'Datos procesados y almacenados'})
 
 @app.route('/peticiones')
 def peticiones():
@@ -72,7 +105,12 @@ def reportes():
 
 @app.route('/ayuda')
 def ayuda():
-    pass
+    try:
+        startfile(r'C:\Users\aleze\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\Proyecto3\IPC2_Proyecto3_202004750\Documentación\Ayuda.png')
+        startfile(r'C:\Users\aleze\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\Proyecto3\IPC2_Proyecto3_202004750\Documentación\Reporte.pdf')
+    except error:
+        print(error)
+    return "Abriendo menú"
 
 @app.route('/enviar')
 def enviar():
@@ -82,7 +120,7 @@ def enviar():
 def reset():
     pass
 
-@app.route('/ola')
+@app.route('/salida')
 def salida():
     f = open("autorizaciones.xml","w")
     f.write("""
@@ -100,5 +138,9 @@ def salida():
     """)
     f.close
     return "Ola"
+
+
+    
+
 if __name__ == '__main__':
     app.run(host = 'localhost', debug = True)
