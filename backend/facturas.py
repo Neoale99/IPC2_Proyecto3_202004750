@@ -1,7 +1,22 @@
 class Facturas():
-    def __init__(self,nit):
-        self.nit = nit
+    listafec = []
+    listaref = []
+    listanite = []
+    listanitrec = []
+    listavalor = []
+    listaiva = []
+    listatot = []
+    listavalido = []
+    listaerrores = []
+    contadordefacturas = 0
+    
+    def __init__(self):
+        print("Hola")
 
 
-    def getnit(self):
-        return self.nit
+
+
+    def getnit(nit):
+        print("matat")
+        return "hola"
+    
