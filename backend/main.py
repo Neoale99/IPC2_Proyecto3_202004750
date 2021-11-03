@@ -107,7 +107,7 @@ def reportes():
 def ayuda():
     try:
         startfile(r'C:\Users\aleze\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\Proyecto3\IPC2_Proyecto3_202004750\Documentación\Ayuda.png')
-        startfile(r'C:\Users\aleze\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\Proyecto3\IPC2_Proyecto3_202004750\Documentación\Reporte.pdf')
+        startfile('C:\Users\aleze\Desktop\USAC\Semestre 2 2021\IPC 2\Lab\Proyecto3\IPC2_Proyecto3_202004750\Documentación\Reporte.pdf')
     except error:
         print(error)
     return "Abriendo menú"
