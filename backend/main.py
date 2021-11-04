@@ -185,11 +185,20 @@ def resumenrango():
 
 @app.route('/peticiones/grafica')
 def grafica():
-    pass
-
+    try:
+       
+        startfile(r'IPC2_Proyecto3_202004750\Documentación\ACE.pdf')
+    except error:
+        print(error)
+    return "Abriendo menú"
 @app.route('/peticiones/reportes')
 def reportes():
-    pass
+    try:
+       
+        startfile(r'IPC2_Proyecto3_202004750\Documentación\sheeesh.pdf')
+    except error:
+        print(error)
+    return "Abriendo menú"
 
 @app.route('/ayuda')
 def ayuda():
